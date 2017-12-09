@@ -14,7 +14,13 @@ MFFeedDirection class >> allDirections [
 
 { #category : #accessing }
 MFFeedDirection class >> crossPost [
-	^ MFFeedDirectionCrossPost uniqueInstance
+	^ MFFeedDirectionCrossPosting uniqueInstance
+]
+
+{ #category : #'instance creation' }
+MFFeedDirection class >> fromString: aString [
+	^ self allDirections 
+		detect: [ :each | each label = aString ]
 ]
 
 { #category : #accessing }
