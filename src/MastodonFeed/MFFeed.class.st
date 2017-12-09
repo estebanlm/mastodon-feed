@@ -79,6 +79,7 @@ MFFeed >> updateTwitterToMastodon [
 	
 	statuses := twitterLogin timelineUser
 		username: self twitterAccount username;
+		includeRTs: self twitterAccount includeRTs;
 		sinceId: lastUpdate id;
 		all.
 		
