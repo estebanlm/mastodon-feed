@@ -49,3 +49,8 @@ MFFeedDirection class >> uniqueInstance [
 		ifTrue: [ self error: 'I''m an abstract class. Use one of my children instead.' ]. 
 	^ uniqueInstance ifNil: [ uniqueInstance := super new ]
 ]
+
+{ #category : #updating }
+MFFeedDirection >> updateOn: aFeed [
+	self subclassResponsibility
+]

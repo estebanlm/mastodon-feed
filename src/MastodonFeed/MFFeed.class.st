@@ -43,3 +43,47 @@ MFFeed >> twitterAccount [
 MFFeed >> twitterAccount: anObject [
 	twitterAccount := anObject
 ]
+
+{ #category : #updating }
+MFFeed >> update [
+	(MFFeedDirection 
+		fromString: self direction)
+		updateOn: self
+]
+
+{ #category : #updating }
+MFFeed >> updateMastodonToTwitter [
+	| twitterLogin mastodonLogin lastUpdate statuses  |
+	
+	twitterLogin := self twitterAccount login.
+	mastodonLogin := self mastodonAccount login.
+	lastUpdate := mastodonLogin lastUpdate.
+	
+	statuses := mastodonLogin timelineHome
+		sinceId: lastUpdate id;
+		all.
+		
+	statuses reverseDo: [ :each | twitterLogin postStatus: each asTwitterStatus ].
+	lastUpdate 
+		id: statuses first id;
+		store
+]
+
+{ #category : #updating }
+MFFeed >> updateTwitterToMastodon [
+	| twitterLogin mastodonLogin lastUpdate statuses  |
+	
+	twitterLogin := self twitterAccount login.
+	mastodonLogin := self mastodonAccount login.
+	lastUpdate := twitterLogin lastUpdate.
+	
+	statuses := twitterLogin timelineUser
+		username: self twitterAccount username;
+		sinceId: lastUpdate id;
+		all.
+		
+	statuses do: [ :each | mastodonLogin postStatus: each asMastodonStatus ].
+	lastUpdate 
+		id: statuses first id;
+		store
+]

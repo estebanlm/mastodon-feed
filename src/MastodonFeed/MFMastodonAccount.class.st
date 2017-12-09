@@ -1,3 +1,9 @@
+"
+I'm a mastodon account. 
+I keep server, username and password.
+
+I can connect with a mastodon instance.
+"
 Class {
 	#name : #MFMastodonAccount,
 	#superclass : #Object,

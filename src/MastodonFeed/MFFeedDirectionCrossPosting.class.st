@@ -8,3 +8,9 @@ Class {
 MFFeedDirectionCrossPosting class >> label [ 
 	^ 'cross-posting'
 ]
+
+{ #category : #updating }
+MFFeedDirectionCrossPosting >> updateOn: aFeed [
+	aFeed updateTwitterToMastodon.
+	aFeed updateMastodonToTwitter
+]

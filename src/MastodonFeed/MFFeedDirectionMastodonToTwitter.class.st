@@ -8,3 +8,8 @@ Class {
 MFFeedDirectionMastodonToTwitter class >> label [ 
 	^ 'mastodon-to-twitter'
 ]
+
+{ #category : #updating }
+MFFeedDirectionMastodonToTwitter >> updateOn: aFeed [
+	aFeed updateMastodonToTwitter
+]

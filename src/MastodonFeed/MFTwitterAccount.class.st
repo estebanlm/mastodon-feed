@@ -1,3 +1,9 @@
+"
+I'm a twitter account. 
+I keep server, username and password.
+
+I can connect with twitter.
+"
 Class {
 	#name : #MFTwitterAccount,
 	#superclass : #Object,
