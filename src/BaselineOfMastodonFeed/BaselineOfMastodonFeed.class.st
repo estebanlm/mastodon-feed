@@ -9,11 +9,19 @@ BaselineOfMastodonFeed >> baseline: spec [
 	<baseline>
 
 	spec for: #common do: [
+		self logger: spec.
 		self mastodon: spec.
 		self twitter: spec.
 		spec package: 'MastodonFeed' with: [ 
-			spec requires: #('Mastodon' 'Twitter') ] ]
+			spec requires: #('Logger' 'Mastodon' 'Twitter') ] ]
 
+]
+
+{ #category : #'external projects' }
+BaselineOfMastodonFeed >> logger: spec [
+	spec 
+		baseline: 'Logger'
+		with: [ spec repository: 'github://estebanlm/logger/src' ]	
 ]
 
 { #category : #'external projects' }

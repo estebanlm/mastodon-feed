@@ -89,6 +89,15 @@ MFTwitterAccount >> includeRTs: anObject [
 	includeRTs := anObject
 ]
 
+{ #category : #actions }
+MFTwitterAccount >> login [
+	^ TwiLogin 
+	consumerKey: self consumerKey
+	consumerSecret: self consumerSecret
+	accessToken: self accessToken
+	accessTokenSecret: self accessTokenSecret
+]
+
 { #category : #accessing }
 MFTwitterAccount >> username [
 	"OPTIONAL: the username timeline to query. When I'm 'sniffing' an user account is not mine, 

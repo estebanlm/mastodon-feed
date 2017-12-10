@@ -20,6 +20,13 @@ MFMastodonAccount class >> stonName [
 	^ 'Mastodon'
 ]
 
+{ #category : #actions }
+MFMastodonAccount >> login [
+	^ (MdnServer url: self server)
+		loginUsername: self username 
+		password: self password
+]
+
 { #category : #accessing }
 MFMastodonAccount >> password [
 	^ password

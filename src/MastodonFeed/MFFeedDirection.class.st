@@ -50,6 +50,16 @@ MFFeedDirection class >> uniqueInstance [
 	^ uniqueInstance ifNil: [ uniqueInstance := super new ]
 ]
 
+{ #category : #accessing }
+MFFeedDirection >> label [ 
+	^ self class label
+]
+
+{ #category : #printing }
+MFFeedDirection >> printOn: stream [ 
+	stream << self label
+]
+
 { #category : #updating }
 MFFeedDirection >> updateOn: aFeed [
 	self subclassResponsibility

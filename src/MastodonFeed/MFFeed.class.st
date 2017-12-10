@@ -1,3 +1,26 @@
+"
+I'm a feed.
+I can log to mastodon and twitter to post toots/twits from one side otor the other.
+
+I'm usually read trough a ston file (who configures me). This is an example of my shape: 
+
+Feed { 
+	#direction : 'cross-posting',
+	#mastodonAccount : Mastodon {
+		#server : ''https://mastodon.social'',
+		#username : ''username@mail.net'',
+		#password : ''shhh''
+	}, 
+	#twitterAccount : Twitter {
+		#consumerKey : 'CONSUMER_KEY',
+		#consumerSecret : 'CONSUMER_SECRET',
+		#accessToken : 'ACCESS_TOKEN',
+		#accessTokenSecret : 'ACCESS_TOKEN_SECREET',
+		#username : nil,
+		#includeRTs: false
+	}
+}
+"
 Class {
 	#name : #MFFeed,
 	#superclass : #Object,
@@ -16,6 +39,7 @@ MFFeed class >> stonName [
 
 { #category : #accessing }
 MFFeed >> direction [
+	"direction can be any of MFFeedDirecion allDirections collect: #name"
 	^ direction
 ]
 
@@ -62,8 +86,14 @@ MFFeed >> updateMastodonToTwitter [
 	statuses := mastodonLogin timelineHome
 		sinceId: lastUpdate id;
 		all.
-		
-	statuses reverseDo: [ :each | twitterLogin postStatus: each asTwitterStatus ].
+	statuses ifEmpty: [ ^ self ].
+	
+	[ 'Updating mastodon account {1}' format: { mastodonLogin account acct  } ] emitLogInfo.
+	statuses reverseDo: [ :each | | status |
+		status := each asTwitterStatus.
+		twitterLogin postStatus: status.
+		status emitLogInfo ].
+	[ '{1} toot(s) sent to twitter' format: { statuses size } ] emitLogInfo.
 	lastUpdate 
 		id: statuses first id;
 		store
@@ -82,8 +112,15 @@ MFFeed >> updateTwitterToMastodon [
 		includeRTs: self twitterAccount includeRTs;
 		sinceId: lastUpdate id;
 		all.
-		
-	statuses do: [ :each | mastodonLogin postStatus: each asMastodonStatus ].
+	statuses ifEmpty: [ ^ self ].
+
+	[ 'Updating twitter account {1}' format: { twitterLogin user screenName } ] emitLogInfo.	
+	statuses do: [ :each | | status |
+		status := each asMastodonStatus.
+		mastodonLogin postStatus: each asMastodonStatus.
+		status emitLogInfo ].
+	[ '{1} twit(s) sent to mastodon' format: { statuses size } ] emitLogInfo.
+
 	lastUpdate 
 		id: statuses first id;
 		store
