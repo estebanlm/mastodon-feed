@@ -38,60 +38,70 @@ MFTwitterAccount class >> stonName [
 	^ 'Twitter'
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> accessToken [
 	^ accessToken
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> accessToken: anObject [
 	accessToken := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> accessTokenSecret [
 	^ accessTokenSecret
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> accessTokenSecret: anObject [
 	accessTokenSecret := anObject
 ]
 
 { #category : #accessing }
+MFTwitterAccount >> accountName [
+	^ self account screenName
+]
+
+{ #category : #'accessing api' }
 MFTwitterAccount >> consumerKey [
 	^ consumerKey
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> consumerKey: anObject [
 	consumerKey := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> consumerSecret [
 	^ consumerSecret
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> consumerSecret: anObject [
 	consumerSecret := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #converting }
+MFTwitterAccount >> convertToTwitter: aStatus [
+	self halt
+]
+
+{ #category : #'accessing api' }
 MFTwitterAccount >> includeRTs [
 	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
 	^ includeRTs ifNil: [ includeRTs := self class defaultIncludeRTs ]
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> includeRTs: anObject [
 	includeRTs := anObject
 ]
 
 { #category : #accessing }
 MFTwitterAccount >> lastUpdateReference [
-	^ FileLocator imageDirectory / ('twitter-', self account screenName, '.update.ston')
+	^ FileLocator imageDirectory / ('twitter-', self accountName, '.update.ston')
 ]
 
 { #category : #'private factory' }
@@ -103,14 +113,22 @@ MFTwitterAccount >> newLogin [
 	accessTokenSecret: self accessTokenSecret
 ]
 
-{ #category : #accessing }
+{ #category : #private }
+MFTwitterAccount >> timelineSinceId: anId [
+	^ self login timelineUser 
+		username: self username;
+		includeRTs: self includeRTs;
+		nextSinceId: anId
+]
+
+{ #category : #'accessing api' }
 MFTwitterAccount >> username [
 	"OPTIONAL: the username timeline to query. When I'm 'sniffing' an user account is not mine, 
 	 I need to take the twites by querying their public timeline."
 	^ username
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing api' }
 MFTwitterAccount >> username: anObject [
 	username := anObject
 ]

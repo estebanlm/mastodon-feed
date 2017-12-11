@@ -1,6 +1,6 @@
 Extension { #name : #MdnStatus }
 
 { #category : #'*MastodonFeed' }
-MdnStatus >> feedToStatusOf: aLogin [
-	^ aLogin feedStatusFromMastodon: self
+MdnStatus >> feedToStatusOf: anAccount [
+	^ anAccount convertToTwitter: self
 ]

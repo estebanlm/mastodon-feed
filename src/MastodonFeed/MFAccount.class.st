@@ -23,6 +23,11 @@ MFAccount >> account [
 ]
 
 { #category : #accessing }
+MFAccount >> accountName [
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
 MFAccount >> lastUpdateReference [
 	^ self subclassResponsibility
 ]
@@ -37,6 +42,12 @@ MFAccount >> newLogin [
 	^ self subclassResponsibility
 ]
 
+{ #category : #private }
+MFAccount >> timelineSinceId: anId [
+	self subclassResponsibility
+		
+]
+
 { #category : #updating }
 MFAccount >> updateTo: anAccount [
 	| lastUpdateReference lastUpdate statuses fromLogin toLogin |
@@ -44,21 +55,19 @@ MFAccount >> updateTo: anAccount [
 	fromLogin := self login.
 	toLogin := anAccount login.
 	
-	lastUpdateReference := fromLogin feedLastUpdateFileReference.
+	lastUpdateReference := self lastUpdateReference.
 	lastUpdate := MFAccountUpdate fromReference: lastUpdateReference.
 	
-	statuses := (fromLogin 
-			feedTimelineSinceId: lastUpdate id 
-			account: self) 
-		select: [ :each | each createdAt > lastUpdate date ].
+	statuses := (self timelineSinceId: lastUpdate id) "
+		select: [ :each | each createdAt > lastUpdate date ]".
 	statuses ifEmpty: [ ^ self ].
 
-	[ 'Updating twitter account {1}' format: { fromLogin feedAccountName } ] emitLogInfo.	
+	[ 'Updating account {1}' format: { self accountName } ] emitLogInfo.	
 	statuses do: [ :each | | status |
-		status := each feedToStatusOf: toLogin.
-		toLogin postStatus: status.
+		status := each feedToStatusOf: anAccount.
+		"toLogin postStatus: status."
 		status emitLogInfo ].
-	[ '{1} twit(s) sent to mastodon' format: { statuses size } ] emitLogInfo.
+	[ '{1} status(es) posted.' format: { statuses size } ] emitLogInfo.
 
 	lastUpdate 
 		id: statuses first id;
