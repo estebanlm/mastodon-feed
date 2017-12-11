@@ -16,7 +16,7 @@ Twitter {
 "
 Class {
 	#name : #MFTwitterAccount,
-	#superclass : #Object,
+	#superclass : #MFAccount,
 	#instVars : [
 		'consumerKey',
 		'consumerSecret',
@@ -89,8 +89,13 @@ MFTwitterAccount >> includeRTs: anObject [
 	includeRTs := anObject
 ]
 
-{ #category : #actions }
-MFTwitterAccount >> login [
+{ #category : #accessing }
+MFTwitterAccount >> lastUpdateReference [
+	^ FileLocator imageDirectory / ('twitter-', self account screenName, '.update.ston')
+]
+
+{ #category : #'private factory' }
+MFTwitterAccount >> newLogin [
 	^ TwiLogin 
 	consumerKey: self consumerKey
 	consumerSecret: self consumerSecret

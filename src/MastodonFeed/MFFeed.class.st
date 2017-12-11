@@ -77,51 +77,10 @@ MFFeed >> update [
 
 { #category : #updating }
 MFFeed >> updateMastodonToTwitter [
-	| twitterLogin mastodonLogin lastUpdate statuses  |
-	
-	twitterLogin := self twitterAccount login.
-	mastodonLogin := self mastodonAccount login.
-	lastUpdate := mastodonLogin lastUpdate.
-	
-	statuses := mastodonLogin timelineHome
-		sinceId: lastUpdate id;
-		all.
-	statuses ifEmpty: [ ^ self ].
-	
-	[ 'Updating mastodon account {1}' format: { mastodonLogin account acct  } ] emitLogInfo.
-	statuses reverseDo: [ :each | | status |
-		status := each asTwitterStatus.
-		twitterLogin postStatus: status.
-		status emitLogInfo ].
-	[ '{1} toot(s) sent to twitter' format: { statuses size } ] emitLogInfo.
-	lastUpdate 
-		id: statuses first id;
-		store
+	self mastodonAccount updateTo: self twitterAccount
 ]
 
 { #category : #updating }
 MFFeed >> updateTwitterToMastodon [
-	| twitterLogin mastodonLogin lastUpdate statuses  |
-	
-	twitterLogin := self twitterAccount login.
-	mastodonLogin := self mastodonAccount login.
-	lastUpdate := twitterLogin lastUpdate.
-	
-	statuses := twitterLogin timelineUser
-		username: self twitterAccount username;
-		includeRTs: self twitterAccount includeRTs;
-		sinceId: lastUpdate id;
-		all.
-	statuses ifEmpty: [ ^ self ].
-
-	[ 'Updating twitter account {1}' format: { twitterLogin user screenName } ] emitLogInfo.	
-	statuses do: [ :each | | status |
-		status := each asMastodonStatus.
-		mastodonLogin postStatus: each asMastodonStatus.
-		status emitLogInfo ].
-	[ '{1} twit(s) sent to mastodon' format: { statuses size } ] emitLogInfo.
-
-	lastUpdate 
-		id: statuses first id;
-		store
+	self twitterAccount updateTo: self mastodonAccount
 ]

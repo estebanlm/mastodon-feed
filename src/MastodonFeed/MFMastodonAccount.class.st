@@ -6,7 +6,7 @@ I can connect with a mastodon instance.
 "
 Class {
 	#name : #MFMastodonAccount,
-	#superclass : #Object,
+	#superclass : #MFAccount,
 	#instVars : [
 		'server',
 		'username',
@@ -20,8 +20,13 @@ MFMastodonAccount class >> stonName [
 	^ 'Mastodon'
 ]
 
-{ #category : #actions }
-MFMastodonAccount >> login [
+{ #category : #accessing }
+MFMastodonAccount >> lastUpdateReference [
+	^ FileLocator imageDirectory / 'mastodon-', self account acct, '.update.ston'
+]
+
+{ #category : #'private factory' }
+MFMastodonAccount >> newLogin [
 	^ (MdnServer url: self server)
 		loginUsername: self username 
 		password: self password
