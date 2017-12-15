@@ -53,7 +53,7 @@ MFMastodonAccount >> convertToMastodon: aStatus [
 			yourself ].
 	
 	^ MdnPostStatus new
-		status: content;
+		content: content;
 		medias: medias;
 		yourself
 ]
@@ -66,8 +66,8 @@ MFMastodonAccount >> lastUpdateReference [
 { #category : #'private factory' }
 MFMastodonAccount >> newLogin [
 	^ (MdnServer url: self server)
-		loginUsername: self username 
-		password: self password
+		applicationName: self class mastodonApplicationName;
+		loginUsername: self username password: self password
 ]
 
 { #category : #'accessing api' }

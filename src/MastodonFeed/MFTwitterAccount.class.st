@@ -89,14 +89,14 @@ MFTwitterAccount >> convertToTwitter: aStatus [
 ]
 
 { #category : #'accessing api' }
-MFTwitterAccount >> includeRTs [
-	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
-	^ includeRTs ifNil: [ includeRTs := self class defaultIncludeRTs ]
-]
-
-{ #category : #'accessing api' }
 MFTwitterAccount >> includeRTs: anObject [
 	includeRTs := anObject
+]
+
+{ #category : #testing }
+MFTwitterAccount >> isIncludeRTs [
+	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
+	^ includeRTs ifNil: [ includeRTs := self class defaultIncludeRTs ]
 ]
 
 { #category : #accessing }
@@ -117,7 +117,8 @@ MFTwitterAccount >> newLogin [
 MFTwitterAccount >> timelineSinceId: anId [
 	^ self login timelineUser 
 		username: self username;
-		includeRTs: self includeRTs;
+		includeRTs: self isIncludeRTs;
+		excludeReplies: true;
 		nextSinceId: anId
 ]
 

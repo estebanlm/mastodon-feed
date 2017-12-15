@@ -12,6 +12,16 @@ Class {
 	#category : #MastodonFeed
 }
 
+{ #category : #accessing }
+MFAccount class >> crosspostOrigins [
+	^ #('pharo-mastodon-feed' 'Mastodon-Twitter')
+]
+
+{ #category : #accessing }
+MFAccount class >> mastodonApplicationName [
+	^ self crosspostOrigins first
+]
+
 { #category : #'ston-core' }
 MFAccount class >> stonAllInstVarNames [
 	^ super stonAllInstVarNames copyWithout: 'login'
@@ -25,6 +35,16 @@ MFAccount >> account [
 { #category : #accessing }
 MFAccount >> accountName [
 	^ self subclassResponsibility
+]
+
+{ #category : #private }
+MFAccount >> crosspostOrigins [
+	^ self class crosspostOrigins
+]
+
+{ #category : #testing }
+MFAccount >> isCrosspostOrigin: aString [
+	^ self crosspostOrigins anySatisfy: [ :each | aString includesSubstring: each ]
 ]
 
 { #category : #accessing }
@@ -58,14 +78,15 @@ MFAccount >> updateTo: anAccount [
 	lastUpdateReference := self lastUpdateReference.
 	lastUpdate := MFAccountUpdate fromReference: lastUpdateReference.
 	
-	statuses := (self timelineSinceId: lastUpdate id) "
-		select: [ :each | each createdAt > lastUpdate date ]".
+	statuses := ((self timelineSinceId: lastUpdate id) 
+		reject: [ :each | self isCrosspostOrigin: each source ])
+		select: [ :each | each createdAt > lastUpdate date ].
 	statuses ifEmpty: [ ^ self ].
 
 	[ 'Updating account {1}' format: { self accountName } ] emitLogInfo.	
-	statuses do: [ :each | | status |
+	statuses reverseDo: [ :each | | status |
 		status := each feedToStatusOf: anAccount.
-		"toLogin postStatus: status."
+		toLogin postStatus: status.
 		status emitLogInfo ].
 	[ '{1} status(es) posted.' format: { statuses size } ] emitLogInfo.
 
