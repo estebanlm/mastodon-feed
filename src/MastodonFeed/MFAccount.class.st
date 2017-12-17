@@ -79,8 +79,8 @@ MFAccount >> updateTo: anAccount [
 	lastUpdate := MFAccountUpdate fromReference: lastUpdateReference.
 	
 	statuses := ((self timelineSinceId: lastUpdate id) 
-		reject: [ :each | self isCrosspostOrigin: each source ])
-		select: [ :each | each createdAt > lastUpdate date ].
+		select: [ :each | each createdAt > lastUpdate date ])
+		select: [ :each | self willExportStatus: each ].
 	statuses ifEmpty: [ ^ self ].
 
 	[ 'Updating account {1}' format: { self accountName } ] emitLogInfo.	
@@ -93,4 +93,10 @@ MFAccount >> updateTo: anAccount [
 	lastUpdate 
 		id: statuses first id;
 		storeOn: lastUpdateReference
+]
+
+{ #category : #testing }
+MFAccount >> willExportStatus: aStatus [
+	"I'm used to filter status in bases that can't be processed in the timeline query."
+	^ true
 ]

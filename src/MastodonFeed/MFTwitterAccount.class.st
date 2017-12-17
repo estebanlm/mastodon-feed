@@ -23,7 +23,8 @@ Class {
 		'accessToken',
 		'accessTokenSecret',
 		'username',
-		'includeRTs'
+		'includeRTs',
+		'includeReplies'
 	],
 	#category : #MastodonFeed
 }
@@ -85,7 +86,33 @@ MFTwitterAccount >> consumerSecret: anObject [
 
 { #category : #converting }
 MFTwitterAccount >> convertToTwitter: aStatus [
-	self halt
+	| post content |
+	content := aStatus strippedContent.
+	post := TwiPostStatus new.
+	post possiblySensitive: aStatus spoilerText isEmptyOrNil not.
+	aStatus mediaAttachments collect: [ :each | | tempRef response |
+		"remove media link from status"
+		content := content copyReplaceAll: each textUrl with: ''. 
+		"download media file"
+		tempRef := FileReference newTempFilePrefix: 'media-' suffix: '.dat'.
+		response := ZnClient new 
+			url: each url asZnUrl;
+			downloadTo: tempRef;
+			response.
+		
+		post addMedia: (TwiPostMedia 
+			fileName: each url asZnUrl lastPathSegment
+			reference: tempRef) ].
+	
+	post content: content.
+	
+	^ post 
+]
+
+{ #category : #'accessing api' }
+MFTwitterAccount >> includeRTs [
+	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
+	^ includeRTs ifNil: [ includeRTs := self class defaultIncludeRTs ]
 ]
 
 { #category : #'accessing api' }
@@ -93,10 +120,14 @@ MFTwitterAccount >> includeRTs: anObject [
 	includeRTs := anObject
 ]
 
-{ #category : #testing }
-MFTwitterAccount >> isIncludeRTs [
-	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
-	^ includeRTs ifNil: [ includeRTs := self class defaultIncludeRTs ]
+{ #category : #accessing }
+MFTwitterAccount >> includeReplies [
+	^ includeReplies
+]
+
+{ #category : #accessing }
+MFTwitterAccount >> includeReplies: anObject [
+	includeReplies := anObject
 ]
 
 { #category : #accessing }
@@ -106,19 +137,22 @@ MFTwitterAccount >> lastUpdateReference [
 
 { #category : #'private factory' }
 MFTwitterAccount >> newLogin [
-	^ TwiLogin 
-	consumerKey: self consumerKey
-	consumerSecret: self consumerSecret
-	accessToken: self accessToken
-	accessTokenSecret: self accessTokenSecret
+	^ (TwiLogin 
+		consumerKey: self consumerKey
+		consumerSecret: self consumerSecret
+		accessToken: self accessToken
+		accessTokenSecret: self accessTokenSecret)
+	account; "ensure credentials verification"
+	yourself
+		
 ]
 
 { #category : #private }
 MFTwitterAccount >> timelineSinceId: anId [
 	^ self login timelineUser 
 		username: self username;
-		includeRTs: self isIncludeRTs;
-		excludeReplies: true;
+		includeRTs: self includeRTs;
+		excludeReplies: self includeReplies not;
 		nextSinceId: anId
 ]
 
@@ -132,4 +166,9 @@ MFTwitterAccount >> username [
 { #category : #'accessing api' }
 MFTwitterAccount >> username: anObject [
 	username := anObject
+]
+
+{ #category : #testing }
+MFTwitterAccount >> willExportStatus: aStatus [
+	^ (self isCrosspostOrigin: aStatus source) not
 ]

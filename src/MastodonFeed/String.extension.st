@@ -20,3 +20,17 @@ String >> allMentions [
 			words add: word trimBoth ] ].
 	^ words asArray
 ]
+
+{ #category : #'*MastodonFeed' }
+String >> splitFullWordsWithLimit: aNumber [	
+	^ Array streamContents: [ :stream | | string readStream |
+		string := ''.
+		readStream := self readStream.
+		[ readStream atEnd ]
+		whileFalse: [ | word |
+			word := readStream upTo: Character space.
+			((string size + word size) <= 275)
+				ifTrue: [ string := string, ' ', word ]
+				ifFalse: [ stream add: string. string := word ] ].
+		stream add: string ]
+]

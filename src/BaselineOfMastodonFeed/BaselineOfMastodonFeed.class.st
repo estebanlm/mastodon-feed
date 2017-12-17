@@ -12,9 +12,20 @@ BaselineOfMastodonFeed >> baseline: spec [
 		self logger: spec.
 		self mastodon: spec.
 		self twitter: spec.
+		self html: spec.
 		spec package: 'MastodonFeed' with: [ 
-			spec requires: #('Logger' 'Mastodon' 'Twitter') ] ]
+			spec requires: #('Logger' 'Mastodon' 'Twitter' 'XMLParserHTML') ] ]
 
+]
+
+{ #category : #'external projects' }
+BaselineOfMastodonFeed >> html: spec [
+	spec 
+		configuration: 'XMLParserHTML'
+		with: [ 
+			spec 
+				version: '1.4.0';
+				repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
 ]
 
 { #category : #'external projects' }

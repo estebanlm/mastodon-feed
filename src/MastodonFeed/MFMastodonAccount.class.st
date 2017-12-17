@@ -10,7 +10,9 @@ Class {
 	#instVars : [
 		'server',
 		'username',
-		'password'
+		'password',
+		'includeBoosts',
+		'includeReplies'
 	],
 	#category : #MastodonFeed
 }
@@ -58,9 +60,36 @@ MFMastodonAccount >> convertToMastodon: aStatus [
 		yourself
 ]
 
+{ #category : #'accessing api' }
+MFMastodonAccount >> includeBoosts [
+	^ includeBoosts
+]
+
+{ #category : #'accessing api' }
+MFMastodonAccount >> includeBoosts: anObject [
+	includeBoosts := anObject
+]
+
+{ #category : #'accessing api' }
+MFMastodonAccount >> includeReplies [
+	^ includeReplies
+]
+
+{ #category : #'accessing api' }
+MFMastodonAccount >> includeReplies: anObject [
+	includeReplies := anObject
+]
+
+{ #category : #initialization }
+MFMastodonAccount >> initialize [
+	super initialize.
+	self includeBoosts: true.
+	self includeReplies: false
+]
+
 { #category : #accessing }
 MFMastodonAccount >> lastUpdateReference [
-	^ FileLocator imageDirectory / 'mastodon-', self accountName, '.update.ston'
+	^ FileLocator imageDirectory / ('mastodon-', self accountName, '.update.ston')
 ]
 
 { #category : #'private factory' }
@@ -92,7 +121,11 @@ MFMastodonAccount >> server: anObject [
 
 { #category : #private }
 MFMastodonAccount >> timelineSinceId: anId [
-	^ self login timelineHome nextSinceId: anId
+	| timeline |
+	timeline := self login timelineHome.
+	^ anId
+		ifNotNil: [ timeline allSinceId: anId ]
+		ifNil: [ timeline last: 200 ]
 ]
 
 { #category : #'accessing api' }
@@ -103,4 +136,12 @@ MFMastodonAccount >> username [
 { #category : #'accessing api' }
 MFMastodonAccount >> username: anObject [
 	username := anObject
+]
+
+{ #category : #testing }
+MFMastodonAccount >> willExportStatus: aStatus [
+	^ (self includeBoosts or: [ (aStatus strippedContent beginsWith: '@') not ])
+		and: [ (self includeReplies or: [ aStatus reblog isNil ]) 
+		and: [ ((aStatus accountName = self accountName) or: [ aStatus reblogged ])
+		and: [ (self isCrosspostOrigin: aStatus applicationName) not ] ] ]
 ]
