@@ -20,19 +20,23 @@ MFFeedCommandLineHandler >> activate [
 	
 	keepAlive := false.
 	fileNames := OrderedCollection new.
+	
+	"parse arguments"
 	GetOpt new
 		at: $k put: [ :opt | keepAlive := true ];
 		at: $? put: [ :opt | self error: 'Illegal option -', opt asString ];
 		default: [ :arg | fileNames add: arg ];
-		parse: self arguments.
-		
+		parse: self arguments.	
 	fileNames ifEmpty: [ self error: 'You need to specify at least one feed to read!' ].
 		
+	"process feeds"
 	Logger logToConsole.
 	fileNames 
 		collect: [ :each | MFFeed fromReference: each asFileReference ]
 		thenDo: #update.
 	Logger stopLogging.
+	
+	"get out"
 	keepAlive ifFalse: [ 
 		Smalltalk snapshot: false andQuit: true ]
 ]

@@ -9,13 +9,26 @@ BaselineOfMastodonFeed >> baseline: spec [
 	<baseline>
 
 	spec for: #common do: [
+		self getopt: spec.
 		self logger: spec.
 		self mastodon: spec.
 		self twitter: spec.
 		self html: spec.
-		spec package: 'MastodonFeed' with: [ 
-			spec requires: #('Logger' 'Mastodon' 'Twitter' 'XMLParserHTML') ] ]
 
+		spec package: 'MastodonFeed' with: [ 
+			spec requires: #(
+				'Logger' 
+				'Mastodon' 
+				'Twitter' 
+				'XMLParserHTML' 
+				'GetOpt') ] ]
+]
+
+{ #category : #baselines }
+BaselineOfMastodonFeed >> getopt: spec [
+	self 
+		package: 'GetOpt' 
+		with: [ spec repository: 'http://smalltalkhub.com/mc/philippeback/GetOpt/main' ]
 ]
 
 { #category : #'external projects' }
