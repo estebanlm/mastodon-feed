@@ -14,7 +14,12 @@ Class {
 
 { #category : #accessing }
 MFAccount class >> crosspostOrigins [
-	^ #('pharo-mastodon-feed' 'Mastodon-Twitter')
+	^ #(
+	'pharo-mastodon-feed' 
+	'mastodon-feed' 
+	'Mastodon-Twitter' 
+	'pharo-mastodon' 
+	'pharo-twitter')
 ]
 
 { #category : #accessing }
