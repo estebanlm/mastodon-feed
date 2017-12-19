@@ -32,6 +32,11 @@ Class {
 	#category : #MastodonFeed
 }
 
+{ #category : #'instance creation' }
+MFFeed class >> fromReference: aReference [
+	^ aReference readStreamDo: [ :stream | STON fromStream: stream ]
+]
+
 { #category : #'ston-core' }
 MFFeed class >> stonName [
 	^ 'Feed'

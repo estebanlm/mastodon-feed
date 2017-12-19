@@ -38,6 +38,11 @@ MFFeedDirection class >> new [
 	^ self error: 'Use #uniqueInstance'
 ]
 
+{ #category : #'ston-core' }
+MFFeedDirection class >> stonName [
+	^ 'FeedDirection'
+]
+
 { #category : #accessing }
 MFFeedDirection class >> twitterToMastodon [
 	^ MFFeedDirectionTwitterToMastodon uniqueInstance
@@ -58,6 +63,13 @@ MFFeedDirection >> label [
 { #category : #printing }
 MFFeedDirection >> printOn: stream [ 
 	stream << self label
+]
+
+{ #category : #'ston persistence' }
+MFFeedDirection >> stonOn: stonWriter [
+	stonWriter 
+		writeObject: self 
+		listSingleton: self label
 ]
 
 { #category : #updating }
