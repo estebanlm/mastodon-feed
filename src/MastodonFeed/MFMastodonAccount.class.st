@@ -31,7 +31,9 @@ MFMastodonAccount >> accountName [
 MFMastodonAccount >> convertToMastodon: aStatus [
 	| content medias |
 	
-	content := aStatus fullText.
+	content := aStatus retweetedStatus
+		ifNotNil: [ :rs| rs fullText ]
+		ifNil: [ aStatus fullText ].
 	"change all names with @name@twitter.com, to show procedence"
 	content allMentions do: [ :each | 
 		content := content copyReplaceAll: each with: each, '@twitter.com' ].
