@@ -26,7 +26,7 @@ BaselineOfMastodonFeed >> baseline: spec [
 
 { #category : #baselines }
 BaselineOfMastodonFeed >> getopt: spec [
-	self 
+	spec 
 		package: 'GetOpt' 
 		with: [ spec repository: 'http://smalltalkhub.com/mc/philippeback/GetOpt/main' ]
 ]
