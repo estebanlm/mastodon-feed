@@ -1,3 +1,6 @@
+"
+I will cosspost twitter-to-mastodon.
+"
 Class {
 	#name : #MFFeedDirectionTwitterToMastodon,
 	#superclass : #MFFeedDirection,

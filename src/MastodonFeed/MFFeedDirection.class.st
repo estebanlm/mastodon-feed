@@ -1,3 +1,9 @@
+"
+I'm an abstract class to define the cross-post ""direction"". 
+My children have concrete definitions.
+
+I'm used to implement a double dispatch over MFFeed.
+"
 Class {
 	#name : #MFFeedDirection,
 	#superclass : #Object,

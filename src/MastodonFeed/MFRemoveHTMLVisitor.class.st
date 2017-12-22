@@ -1,3 +1,7 @@
+"
+I'm used to remove HTML from mastodon statuses.
+I'm needed because Twitter admits plain text while mastodon admits XHTML.
+"
 Class {
 	#name : #MFRemoveHTMLVisitor,
 	#superclass : #XMLNodeVisitor,
