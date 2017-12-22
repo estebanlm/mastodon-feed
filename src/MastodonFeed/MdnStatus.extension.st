@@ -6,6 +6,13 @@ MdnStatus >> feedToStatusOf: anAccount [
 ]
 
 { #category : #'*MastodonFeed' }
+MdnStatus >> loggerString [
+	^ '{1} at: {2}' format: { 
+		self accountName. 
+		self createdAt }
+]
+
+{ #category : #'*MastodonFeed' }
 MdnStatus >> strippedContent [
 	^ self 
 		jsonAt: 'mfStrippedContent' 
