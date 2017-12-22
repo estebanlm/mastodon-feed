@@ -35,10 +35,7 @@ BaselineOfMastodonFeed >> getopt: spec [
 BaselineOfMastodonFeed >> html: spec [
 	spec 
 		configuration: 'XMLParserHTML'
-		with: [ 
-			spec 
-				version: '1.4.0';
-				repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
+		with: [ spec repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
 ]
 
 { #category : #'external projects' }
