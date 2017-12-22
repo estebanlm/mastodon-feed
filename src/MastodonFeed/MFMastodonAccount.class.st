@@ -62,6 +62,11 @@ MFMastodonAccount >> convertToMastodon: aStatus [
 		yourself
 ]
 
+{ #category : #accessing }
+MFMastodonAccount >> fullAccountName [
+	^ self accountName, '@', self server asZnUrl host
+]
+
 { #category : #'accessing api' }
 MFMastodonAccount >> includeBoosts [
 	^ includeBoosts

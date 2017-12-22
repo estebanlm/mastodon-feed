@@ -47,6 +47,11 @@ MFAccount >> crosspostOrigins [
 	^ self class crosspostOrigins
 ]
 
+{ #category : #accessing }
+MFAccount >> fullAccountName [
+	^ self subclassResponsibility
+]
+
 { #category : #testing }
 MFAccount >> isCrosspostOrigin: aString [
 	^ self crosspostOrigins anySatisfy: [ :each | aString includesSubstring: each ]
@@ -76,9 +81,13 @@ MFAccount >> timelineSinceId: anId [
 { #category : #updating }
 MFAccount >> updateTo: anAccount [
 	| lastUpdateReference lastUpdate statuses fromLogin toLogin |
-	
+		
 	fromLogin := self login.
 	toLogin := anAccount login.
+	
+	[ 'Updating from {1} to {2}' format: { 
+		self fullAccountName. 
+		anAccount fullAccountName } ] emitLogInfo.
 	
 	lastUpdateReference := self lastUpdateReference.
 	lastUpdate := MFAccountUpdate fromReference: lastUpdateReference.
@@ -88,7 +97,6 @@ MFAccount >> updateTo: anAccount [
 		select: [ :each | self willExportStatus: each ].
 	statuses ifEmpty: [ ^ self ].
 
-	[ 'Updating account {1}' format: { self accountName } ] emitLogInfo.	
 	statuses reverseDo: [ :each | | status |
 		status := each feedToStatusOf: anAccount.
 		toLogin postStatus: status.

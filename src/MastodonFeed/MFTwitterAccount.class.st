@@ -109,6 +109,11 @@ MFTwitterAccount >> convertToTwitter: aStatus [
 	^ post 
 ]
 
+{ #category : #accessing }
+MFTwitterAccount >> fullAccountName [
+	^ self accountName, '@twitter.com'
+]
+
 { #category : #'accessing api' }
 MFTwitterAccount >> includeRTs [
 	"OPTIONAL: indicates if the query needs to include retwits (default: false)"
