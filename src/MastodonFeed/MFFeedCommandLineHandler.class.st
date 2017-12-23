@@ -4,12 +4,16 @@ Execute mastodon-feed updates.
 Usage: [-h] [-P] account1.ston [account2.ston ...]
 	-h                               Show this help message.
 	-T                               Prints an account template.
-	account1.ston      The account to process. 
+	
+account1.ston... accountN.ston are the accounts to process.
 
 "
 Class {
 	#name : #MFFeedCommandLineHandler,
 	#superclass : #CommandLineHandler,
+	#instVars : [
+		'keepAlive'
+	],
 	#category : #MastodonFeed
 }
 
@@ -25,7 +29,7 @@ MFFeedCommandLineHandler class >> description [
 
 { #category : #activation }
 MFFeedCommandLineHandler >> activate [
-	| fileNames keepAlive printHelp printTemplate |
+	| fileNames printHelp printTemplate |
 	
 	keepAlive := printHelp := printTemplate := false.
 	fileNames := OrderedCollection new.
@@ -39,20 +43,13 @@ MFFeedCommandLineHandler >> activate [
 		default: [ :arg | fileNames add: arg ];
 		parse: self arguments.
 	
-	printHelp ifTrue: [ ^ self printHelp  ].
-	printTemplate ifTrue: [ ^ self printTemplate ].
+	printHelp ifTrue: [ self withPostProcessDo: [ self printHelp ]  ].
+	printTemplate ifTrue: [ self withPostProcessDo: [ self printTemplate ] ].
 
 	fileNames ifEmpty: [ self error: 'You need to specify at least one feed to read!' ].	
 	"process feeds"
-	Logger logToConsole.
-	fileNames 
-		collect: [ :each | MFFeed fromReference: each asFileReference ]
-		thenDo: #update.
-	Logger stopLogging.
-	
-	"get out"
-	keepAlive ifFalse: [ 
-		Smalltalk snapshot: false andQuit: true ]
+	self withPostProcessDo: [ 
+		self processFeeds: fileNames ].
 ]
 
 { #category : #activation }
@@ -75,5 +72,26 @@ MFFeedCommandLineHandler >> printTemplate [
 		#includeReplies: false
 	}
 }	
-' withLineEndings: OSPlatform current lineEnding)
+' withLineEndings: OSPlatform current lineEnding).
+]
+
+{ #category : #activation }
+MFFeedCommandLineHandler >> processFeeds: fileNames [
+	Logger logToConsole.
+	fileNames 
+		collect: [ :each | MFFeed fromReference: each asFileReference ]
+		thenDo: #update.
+	Logger stopLogging
+]
+
+{ #category : #private }
+MFFeedCommandLineHandler >> quitIfEnabled [
+	keepAlive ifTrue: [ ^ self ]. 
+	self quit
+]
+
+{ #category : #private }
+MFFeedCommandLineHandler >> withPostProcessDo: aBlock [
+	aBlock value.
+	self quitIfEnabled
 ]
