@@ -94,11 +94,6 @@ MFMastodonAccount >> initialize [
 	self includeReplies: false
 ]
 
-{ #category : #accessing }
-MFMastodonAccount >> lastUpdateReference [
-	^ FileLocator imageDirectory / ('mastodon-', self accountName, '.update.ston')
-]
-
 { #category : #'private factory' }
 MFMastodonAccount >> newLogin [
 	^ (MdnServer url: self server)

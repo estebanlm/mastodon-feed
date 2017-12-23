@@ -135,11 +135,6 @@ MFTwitterAccount >> includeReplies: anObject [
 	includeReplies := anObject
 ]
 
-{ #category : #accessing }
-MFTwitterAccount >> lastUpdateReference [
-	^ FileLocator imageDirectory / ('twitter-', self accountName, '.update.ston')
-]
-
 { #category : #'private factory' }
 MFTwitterAccount >> newLogin [
 	^ (TwiLogin 

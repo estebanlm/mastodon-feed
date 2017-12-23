@@ -31,7 +31,9 @@ MFFeedCommandLineHandler class >> description [
 MFFeedCommandLineHandler >> activate [
 	| fileNames printHelp printTemplate |
 	
-	keepAlive := printHelp := printTemplate := false.
+	keepAlive := false. 
+	printHelp := false. 
+	printTemplate := false.
 	fileNames := OrderedCollection new.
 	
 	"parse arguments"
@@ -85,13 +87,8 @@ MFFeedCommandLineHandler >> processFeeds: fileNames [
 ]
 
 { #category : #private }
-MFFeedCommandLineHandler >> quitIfEnabled [
-	keepAlive ifTrue: [ ^ self ]. 
-	self quit
-]
-
-{ #category : #private }
 MFFeedCommandLineHandler >> withPostProcessDo: aBlock [
 	aBlock value.
-	self quitIfEnabled
+	keepAlive ifTrue: [ ^ self ]. 
+	self quit
 ]

@@ -59,7 +59,7 @@ MFAccount >> isCrosspostOrigin: aString [
 
 { #category : #accessing }
 MFAccount >> lastUpdateReference [
-	^ self subclassResponsibility
+	^ FileLocator imageDirectory / self fullAccountName
 ]
 
 { #category : #accessing }
