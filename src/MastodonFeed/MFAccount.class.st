@@ -98,8 +98,7 @@ MFAccount >> updateTo: anAccount [
 	statuses ifEmpty: [ ^ self ].
 
 	statuses reverseDo: [ :each | | status |
-		status := each feedToStatusOf: anAccount.
-		toLogin postStatus: status.
+		status := toLogin postStatus: (each feedToStatusOf: anAccount).
 		status emitLogInfo ].
 	[ '{1} status(es) posted.' format: { statuses size } ] emitLogInfo.
 
