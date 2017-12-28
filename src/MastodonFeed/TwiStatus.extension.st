@@ -22,6 +22,6 @@ TwiStatus >> fullTextWithRT [
 { #category : #'*MastodonFeed' }
 TwiStatus >> loggerString [
 	^ '{1} at: {2}' format: { 
-		self account screenName. 
+		self userName. 
 		self createdAt }
 ]
