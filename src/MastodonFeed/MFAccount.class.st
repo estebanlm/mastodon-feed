@@ -72,6 +72,18 @@ MFAccount >> newLogin [
 	^ self subclassResponsibility
 ]
 
+{ #category : #updating }
+MFAccount >> postStatus: postStatus to: toLogin [
+	| status |
+	
+	[ status := toLogin postStatus: postStatus.
+	  status emitLogInfo ]
+	on: TwiDuplicatedStatusError 
+	do: [ :e |
+		"this will just happen in twitter accounts and is ignored always" 
+		'Skipping dupplicated status.' emitLogInfo ] 
+]
+
 { #category : #private }
 MFAccount >> timelineSinceId: anId [
 	self subclassResponsibility
@@ -97,9 +109,10 @@ MFAccount >> updateTo: anAccount [
 		select: [ :each | self willExportStatus: each ].
 	statuses ifEmpty: [ ^ self ].
 
-	statuses reverseDo: [ :each | | status |
-		status := toLogin postStatus: (each feedToStatusOf: anAccount).
-		status emitLogInfo ].
+	statuses reverseDo: [ :each | 
+		self 
+			postStatus: (each feedToStatusOf: anAccount)
+			to: toLogin ].
 	[ '{1} status(es) posted.' format: { statuses size } ] emitLogInfo.
 
 	lastUpdate 
