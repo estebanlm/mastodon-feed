@@ -61,7 +61,7 @@ MFTwitterAccount >> accessTokenSecret: anObject [
 
 { #category : #accessing }
 MFTwitterAccount >> accountName [
-	^ self account screenName
+	^ self username ifNil: [ self account screenName ]
 ]
 
 { #category : #'accessing api' }
