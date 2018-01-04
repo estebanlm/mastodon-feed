@@ -77,7 +77,7 @@ MFMastodonAccount >> includeBoosts: anObject [
 
 { #category : #'accessing api' }
 MFMastodonAccount >> includeReplies [
-	^ includeReplies
+	^ includeReplies ifNil: [ false ]
 ]
 
 { #category : #'accessing api' }

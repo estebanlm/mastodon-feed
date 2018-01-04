@@ -127,7 +127,7 @@ MFTwitterAccount >> includeRTs: anObject [
 
 { #category : #accessing }
 MFTwitterAccount >> includeReplies [
-	^ includeReplies
+	^ includeReplies ifNil: [ false ]
 ]
 
 { #category : #accessing }
